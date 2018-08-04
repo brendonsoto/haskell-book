@@ -56,6 +56,7 @@ replaceThe xs =
 
 
 -- 2
+-- Below is the original solution i came up with, but no maybes/just
 isVowel :: Char -> Bool
 isVowel x
   | x == 'a'  = True
@@ -64,23 +65,20 @@ isVowel x
   | x == 'o'  = True
   | x == 'u'  = True
   | otherwise = False
-
-countTheBeforeVowel' :: [String] -> Integer
-countTheBeforeVowel' [] = 0
-countTheBeforeVowel' (_:[]) = 0
-countTheBeforeVowel' (_:[]:_) = 0
-countTheBeforeVowel' (a:bAll@(b:_):c)
-  | a == "the" && isVowel b = 1 + countTheBeforeVowel' c
-  | otherwise = 0 + countTheBeforeVowel' (bAll:c)
-
-countTheBeforeVowel :: String -> Integer
-countTheBeforeVowel "" = 0
-countTheBeforeVowel xs =
-  countTheBeforeVowel' . words $ xs
+-- countTheBeforeVowel' :: [String] -> Integer
+-- countTheBeforeVowel' [] = 0
+-- countTheBeforeVowel' (_:[]) = 0
+-- countTheBeforeVowel' (_:[]:_) = 0
+-- countTheBeforeVowel' (a:bAll@(b:_):c)
+--   | a == "the" && isVowel b = 1 + countTheBeforeVowel' c
+--   | otherwise = 0 + countTheBeforeVowel' (bAll:c)
+--
+-- countTheBeforeVowel :: String -> Integer
+-- countTheBeforeVowel "" = 0
 -- countTheBeforeVowel xs =
---   where
---     currWord = head . words $ xs
---     restOfWords = tail . words $ xs
+--   countTheBeforeVowel' . words $ xs
+
+-- 2-V2
 
 
 
