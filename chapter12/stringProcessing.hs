@@ -58,13 +58,14 @@ replaceThe xs =
 -- 2
 -- Below is the original solution i came up with, but no maybes/just
 isVowel :: Char -> Bool
-isVowel x
-  | x == 'a'  = True
-  | x == 'e'  = True
-  | x == 'i'  = True
-  | x == 'o'  = True
-  | x == 'u'  = True
-  | otherwise = False
+isVowel x = x `elem` "aeiou"
+-- isVowel x
+--   | x == 'a'  = True
+--   | x == 'e'  = True
+--   | x == 'i'  = True
+--   | x == 'o'  = True
+--   | x == 'u'  = True
+--   | otherwise = False
 -- countTheBeforeVowel' :: [String] -> Integer
 -- countTheBeforeVowel' [] = 0
 -- countTheBeforeVowel' (_:[]) = 0
@@ -79,8 +80,55 @@ isVowel x
 --   countTheBeforeVowel' . words $ xs
 
 -- 2-V2
+-- Did it! Probably not the most efficient, but it's here
+data Invalid = ConsonantAfterThe |
+               NotThe |
+               NoWordAfter |
+               NoWords
+               deriving (Eq, Show)
+type ValidateWordSeq a =
+    Either Invalid a
 
+vowelAfterThe :: [String] -> ValidateWordSeq Int
+vowelAfterThe [] = Left NoWords
+vowelAfterThe [[]] = Left NoWords
+vowelAfterThe [(_:[])] = Left NoWordAfter
+vowelAfterThe [(_:_:_)] = Left NotThe
+vowelAfterThe (x:y:_)
+    | x == "the" && (isVowel . head $ y) = Right 1
+    | otherwise = Left ConsonantAfterThe
 
+countTheBeforeVowel :: String -> Int
+countTheBeforeVowel "" = 0
+countTheBeforeVowel xs =
+    let
+      pair = take 2 . words $ xs
+      rest = unwords . tail . words $ xs
+      go :: ValidateWordSeq Int -> Int
+      go (Right _) = 1
+      go (Left _) = 0
+    in
+      (go . vowelAfterThe $ pair) + (countTheBeforeVowel rest)
+
+-- Same prob, diff approach
+-- getThe :: String -> Maybe String
+-- getThe x
+--   | x == "the" = Just x
+--   | otherwise = Nothing
+--
+-- getVowelAfterThe :: String -> Maybe String
+-- getVowelAfterThe xs
+--   | isVowel . head $ xs = Just xs
+--   | otherwise = Nothing
+--
+-- countTheBeforeVowel' :: String -> String
+-- countTheBeforeVowel' "" = 0
+-- countTheBeforeVowel' xs =
+--   go result
+--   result = getVowelAfterThe . tail . (!! 2) . words $ xs
+--   go :: Maybe String -> Int
+--   go Nothing = 0
+--   go Just _ = 1
 
 -- 3
 
