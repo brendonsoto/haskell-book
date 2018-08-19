@@ -1,5 +1,8 @@
 module Main where
 
+import Bassbull
+
 main :: IO ()
 main = do
-  putStrLn "hello world"
+  summed <- getAtBatsSum "batting.csv"
+  putStrLn $ "Total atBats was: " ++ (show summed)
