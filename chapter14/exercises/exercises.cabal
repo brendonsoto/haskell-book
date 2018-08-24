@@ -1,0 +1,33 @@
+cabal-version: >= 1.10
+
+-- This file has been generated from package.yaml by hpack version 0.29.6.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e6692899cb767f046abb6b17eaaeac26f65441dd24a8e95d266d7a9083d5f775
+
+name:           exercises
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/exercises#readme>
+homepage:       https://github.com/githubuser/exercises#readme
+bug-reports:    https://github.com/githubuser/exercises/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2018 Author name here
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+library
+  exposed-modules:
+      WordNumber
+    , WordNumberTest
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , hspec
+  default-language: Haskell2010
