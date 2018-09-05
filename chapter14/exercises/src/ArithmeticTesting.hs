@@ -126,3 +126,47 @@ runQc8 :: IO ()
 runQc8 = do
     quickCheck prop_app_int
     quickCheck prop_comp_int
+
+
+-- 9
+prop_foldr_concat :: [Char] -> [Char] -> Bool
+prop_foldr_concat x y = foldr (:) x y == x ++ y
+
+prop_foldr_empty_concat :: [[Char]] -> Bool
+prop_foldr_empty_concat xs = foldr (++) [] xs == concat xs
+
+runQc9 :: IO ()
+runQc9 = do
+    quickCheck prop_foldr_concat
+    quickCheck prop_foldr_empty_concat
+
+
+-- 10
+prop_len :: Int -> [Int] -> Bool
+prop_len n xs = length (take n xs) == n
+
+runQc10 :: IO ()
+runQc10 = quickCheck prop_len
+
+
+-- 11
+prop_round_trip :: Int -> Bool
+prop_round_trip x = (read (show x)) == x
+
+runQc11 :: IO ()
+runQc11 = quickCheck prop_round_trip
+
+
+-- Failure
+square :: (Num a) => a -> a
+square x = x * x
+
+prop_square :: NonZero Float -> Bool
+prop_square (NonZero x) = square x / x == x
+
+
+runQcFail1 :: IO()
+runQcFail1 = quickCheck prop_square
+
+-- square and square identity does not hold because of the imprecision of floating numbers
+-- hardware issues representing floats
