@@ -25,6 +25,9 @@ library
   exposed-modules:
       WordNumber
     , WordNumberTest
+    , ArithmeticTesting
+    , Idempotence
+    , RandomGens
   hs-source-dirs:
       src
   build-depends:
