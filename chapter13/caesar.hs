@@ -2,6 +2,7 @@
 module Cipher where
 
 import Data.Char
+import Test.QuickCheck
 
 caesarCipher :: Int -> String -> String
 caesarCipher _ [] = []
@@ -32,3 +33,16 @@ main = do
   putStr "Enter a string to cipher: "
   str <- getLine
   putStrLn $ "Your new string is: " ++ caesarCipher (digitToInt . head $ num) str
+
+
+-- Testing
+prop_cipher_int :: Int -> Bool
+prop_cipher_int n = "sphaghetti" == (deCaesarCipher n . caesarCipher n $ "sphaghetti")
+
+prop_cipher_string :: String -> Bool
+prop_cipher_string x = x == (deCaesarCipher 12 . caesarCipher 12 $ x)
+
+test :: IO ()
+test = do
+    quickCheck prop_cipher_int
+    quickCheck prop_cipher_string
