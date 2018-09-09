@@ -6,6 +6,7 @@ import Data.Maybe (isJust)
 import Data.List (intersperse, (\\))
 import System.Exit (exitSuccess)
 import System.Random (randomRIO)
+import Test.Hspec
 
 
 -- Extras
@@ -116,7 +117,7 @@ getRemainingGuesses (Puzzle _ filledInSoFar guessed) =
       incorrectGuesses = guessed \\ revealedSoFar
 
 gameOver :: Puzzle -> IO ()
-gameOver p@(Puzzle wordToGuess filledInSoFar guessed) =
+gameOver p@(Puzzle wordToGuess _ _) =
   if getRemainingGuesses p == 0 then
     do putStrLn "You lose!"
        putStrLn $
@@ -154,3 +155,45 @@ main = do
         freshPuzzle (fmap toLower word)
   runGame puzzle
 
+
+-- test
+getWord :: Puzzle -> [Maybe Char]
+getWord (Puzzle _ x _) = x
+
+-- Making Puzzle extend Eq to ease testing
+-- In hindsight, this actually wasn't much easier -- Learned something new!
+instance Eq Puzzle where
+    (==) (Puzzle word discovered guessed)
+         (Puzzle word' discovered' guessed') =
+             word == word'
+          && discovered == discovered'
+          && guessed == guessed'
+
+testPuzzle :: Puzzle
+testPuzzle = freshPuzzle "sphaghetti"
+
+test :: IO ()
+test = hspec $ do
+    describe "fillInCharacter" $ do
+        it "should return an array of Nothing if the guessed character is wrong" $ do
+            let expected = (Puzzle "sphaghetti" (getWord testPuzzle) ['c'])
+             in fillInCharacter testPuzzle 'c' `shouldBe` expected
+        it "should return an array of almost Nothing if the guessed char is correct" $ do
+            let expected = (Just 's') : tail (getWord testPuzzle)
+             in (getWord $ fillInCharacter testPuzzle 's') `shouldBe` expected
+    describe "handleGuess" $ do
+        it "should return a puzzle with a new guess char and nothing changed in discovered" $ do
+            let expected = (Puzzle "sphaghetti" (getWord testPuzzle) ['c'])
+             in do
+                result <- handleGuess testPuzzle 'c' 
+                result `shouldBe` expected
+        it "should return an array of almost Nothing if the guessed char is correct" $ do
+            let expected = (Just 's') : tail (getWord testPuzzle)
+             in do
+                 result <- handleGuess testPuzzle 's'
+                 getWord result `shouldBe` expected
+        it "should return the puzzle unchanged if a guess letter has been entered already" $ do
+            let p = (Puzzle "book" [Nothing, Nothing, Nothing, Nothing] ['c'])
+                in do
+                    result <- handleGuess p 'c'
+                    result `shouldBe` p
